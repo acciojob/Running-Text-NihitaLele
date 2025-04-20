@@ -3,7 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Running Text</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    #text {
+      font-size: 24px;
+      margin-top: 20px;
+      min-height: 30px;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+      width: 80px;
+      text-align: center;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -14,6 +37,36 @@
 
   <div id="text"></div>
 
-  <script src="script.js"></script>
+  <script>
+    const fullText = "We love Programming!";
+
+    function startAnimation() {
+      const speedInput = document.getElementById("speed");
+      const speedValue = parseInt(speedInput.value);
+      const display = document.getElementById("text");
+      
+      // Clear previous text
+      display.textContent = "";
+
+      // Validate input
+      if (isNaN(speedValue) || speedValue < 1 || speedValue > 10) {
+        alert("Please enter a speed between 1 and 10.");
+        return;
+      }
+
+      let delay = 500 / speedValue;
+      let index = 0;
+
+      const interval = setInterval(() => {
+        if (index < fullText.length) {
+          display.textContent += fullText.charAt(index);
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, delay);
+    }
+  </script>
+
 </body>
 </html>

@@ -1,72 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Running Text</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
-    #text {
-      font-size: 24px;
-      margin-top: 20px;
-      min-height: 30px;
-    }
-    input {
-      padding: 8px;
-      font-size: 16px;
-      width: 80px;
-      text-align: center;
-    }
-    button {
-      padding: 8px 16px;
-      font-size: 16px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        
+        #text {
+            font-size: 1.5rem;
+            min-height: 3rem;
+            margin: 2rem 0;
+            color: #2c3e50;
+        }
+        
+        .speed-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        
+        .speed-input {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        #speed {
+            width: 200px;
+        }
+        
+        .speed-value {
+            font-weight: bold;
+            min-width: 60px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Typing Speed Demo</h1>
+        
+        <div id="text"></div>
+        
+        <div class="speed-container">
+            <div class="speed-input">
+                <label for="speed">Speed (1-10): </label>
+                <input type="range" id="speed" min="1" max="10" value="5" step="1">
+                <span class="speed-value" id="speed-value">5</span>
+            </div>
+            <button id="restart">Restart</button>
+        </div>
+    </div>
 
-  <h1>Running Text Animation</h1>
-  <label for="speed">Speed (1 - 10): </label>
-  <input type="number" id="speed" min="1" max="10" value="1">
-  <button onclick="startAnimation()">Start</button>
-
-  <div id="text"></div>
-
-  <script>
-    const fullText = "We love Programming!";
-
-    function startAnimation() {
-      const speedInput = document.getElementById("speed");
-      const speedValue = parseInt(speedInput.value);
-      const display = document.getElementById("text");
-      
-      // Clear previous text
-      display.textContent = "";
-
-      // Validate input
-      if (isNaN(speedValue) || speedValue < 1 || speedValue > 10) {
-        alert("Please enter a speed between 1 and 10.");
-        return;
-      }
-
-      let delay = 500 / speedValue;
-      let index = 0;
-
-      const interval = setInterval(() => {
-        if (index < fullText.length) {
-          display.textContent += fullText.charAt(index);
-          index++;
-        } else {
-          clearInterval(interval);
+    <script>
+        const textElement = document.getElementById('text');
+        const speedElement = document.getElementById('speed');
+        const speedValueElement = document.getElementById('speed-value');
+        const restartButton = document.getElementById('restart');
+        
+        const fullText = 'We love Programming!';
+        let charIndex = 0;
+        let timerId = null;
+        
+        function updateSpeedValue() {
+            speedValueElement.textContent = speedElement.value;
         }
-      }, delay);
-    }
-  </script>
-
+        
+        function typeText() {
+            const speed = 500 / parseInt(speedElement.value);
+            
+            if (charIndex < fullText.length) {
+                textElement.textContent += fullText.charAt(charIndex);
+                charIndex++;
+                timerId = setTimeout(typeText, speed);
+            }
+        }
+        
+        function restartTyping() {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+            
+            textElement.textContent = '';
+            charIndex = 0;
+            typeText();
+        }
+        
+        // Initialize
+        speedElement.addEventListener('input', () => {
+            updateSpeedValue();
+            restartTyping();
+        });
+        
+        restartButton.addEventListener('click', restartTyping);
+        
+        // Start typing on page load
+        updateSpeedValue();
+        typeText();
+    </script>
 </body>
 </html>
